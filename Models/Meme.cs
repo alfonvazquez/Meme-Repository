@@ -14,4 +14,9 @@ public class Meme
     public string Description  { get; set; } = string.Empty;
     //public image? Image  { get; set; }
     //public int Score  { get; set; }
+
+    public Gen? Gen { get; set;}
+
+    public List<KeyWord> KeyWords { get; set; } = new();
+
 }

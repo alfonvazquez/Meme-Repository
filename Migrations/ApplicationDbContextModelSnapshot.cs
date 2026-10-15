@@ -16,6 +16,26 @@ namespace memes_aspnet.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
+            modelBuilder.Entity("memes_aspnet.Models.KeyWord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MemeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemeId");
+
+                    b.ToTable("KeyWords");
+                });
+
             modelBuilder.Entity("memes_aspnet.Models.Meme", b =>
                 {
                     b.Property<int>("Id")
@@ -24,15 +44,36 @@ namespace memes_aspnet.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("Gen")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Memes");
+                });
+
+            modelBuilder.Entity("memes_aspnet.Models.KeyWord", b =>
+                {
+                    b.HasOne("memes_aspnet.Models.Meme", "Meme")
+                        .WithMany("KeyWords")
+                        .HasForeignKey("MemeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meme");
+                });
+
+            modelBuilder.Entity("memes_aspnet.Models.Meme", b =>
+                {
+                    b.Navigation("KeyWords");
                 });
 #pragma warning restore 612, 618
         }

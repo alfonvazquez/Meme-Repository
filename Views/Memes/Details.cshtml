@@ -1,0 +1,13 @@
+@model Meme
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<h1>@Model.Name</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Descripcion</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+</dl>
+
+<a class="btn btn-secondary" asp-action="Index">Volver al listado</a>

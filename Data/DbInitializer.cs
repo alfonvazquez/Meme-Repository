@@ -16,11 +16,28 @@ public static class DbInitializer
         if (!context.Memes.Any())
         {
             context.Memes.AddRange(
-                new Meme {Name = "Comunist Bugs Bunny", Description = "Bugs Bunny with the flag of communism behind"},
-                new Meme {Name = "Pathetic", Description = "Professor Skinner from The Simpsons with subtitles saying 'Pathetic'"}
+                new Meme {Name = "Communist Bugs Bunny", Description = "Bugs Bunny with the flag of communism behind", Gen = Gen.Milenial},
+                new Meme {Name = "Pathetic", Description = "Professor Skinner from The Simpsons with subtitles saying 'Pathetic'", Gen = Gen.Milenial}
             );
             context.SaveChanges();
         }
+
+        if (!context.KeyWords.Any())
+        {
+            var communistBugsBunny = context.Memes.First(r => r.Name == "Communist Bugs Bunny");
+            var pathetic = context.Memes.First(r => r.Name == "Pathetic");
+
+            context.KeyWords.AddRange(
+                new KeyWord {Word = "BugsBunny", Meme = communistBugsBunny},
+                new KeyWord {Word = "Communist", Meme = communistBugsBunny},
+                new KeyWord {Word = "Bugs Bunny", Meme = communistBugsBunny},
+                new KeyWord {Word = "Pathetic", Meme = pathetic}
+            );
+            context.SaveChanges();
+        }
+
+        Console.WriteLine($"Memes in the database: {context.Memes.Count()}");
+        Console.WriteLine($"Keywords in the database: {context.KeyWords.Count()}");
         
     }
 }

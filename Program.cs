@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using memes_aspnet.Data;
+using memes_aspnet.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<ImageStorageOptions>(builder.Configuration.GetSection("FileUploads:Images"));
+builder.Services.AddSingleton<ImageStorage>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,7 +28,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();

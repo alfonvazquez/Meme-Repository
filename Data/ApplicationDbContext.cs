@@ -12,5 +12,7 @@ public class ApplicationDbContext : DbContext
 
     // TABLAS
     public DbSet<Meme> Memes => Set<Meme>();
+    public DbSet<KeyWord> KeyWords => Set<KeyWord>();
+
     
 }
