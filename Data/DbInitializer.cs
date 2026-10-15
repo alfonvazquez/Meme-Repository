@@ -13,6 +13,14 @@ public static class DbInitializer
         context.Database.Migrate();
 
         // DATOS DEMO
+        if (!context.Memes.Any())
+        {
+            context.Memes.AddRange(
+                new Meme {Name = "Comunist Bugs Bunny", Description = "Bugs Bunny with the flag of communism behind"},
+                new Meme {Name = "Pathetic", Description = "Professor Skinner from The Simpsons with subtitles saying 'Pathetic'"}
+            );
+            context.SaveChanges();
+        }
         
     }
 }
