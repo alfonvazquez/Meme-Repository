@@ -47,7 +47,7 @@ namespace memes_aspnet.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("Gen")
+                    b.Property<int>("Gen")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")

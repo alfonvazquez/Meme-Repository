@@ -15,7 +15,7 @@ public class Meme
     //public image? Image  { get; set; }
     //public int Score  { get; set; }
 
-    public Gen? Gen { get; set;}
+    public Gen Gen { get; set;}
 
     public List<KeyWord> KeyWords { get; set; } = new();
 
