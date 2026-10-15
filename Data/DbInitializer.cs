@@ -16,8 +16,8 @@ public static class DbInitializer
         if (!context.Memes.Any())
         {
             context.Memes.AddRange(
-                new Meme {Name = "Communist Bugs Bunny", Description = "Bugs Bunny with the flag of communism behind", Gen = Gen.Milenial},
-                new Meme {Name = "Pathetic", Description = "Professor Skinner from The Simpsons with subtitles saying 'Pathetic'", Gen = Gen.Milenial}
+                new Meme {Name = "Communist Bugs Bunny", Description = "Bugs Bunny with the flag of communism behind", Gen = Gen.Milenial, ImageFileName = "Communist_Bugs_Bunny.jpg"},
+                new Meme {Name = "Pathetic", Description = "Professor Skinner from The Simpsons with subtitles saying 'Pathetic'", Gen = Gen.Milenial, ImageFileName = "Pathetic_Skinner.png"}
             );
             context.SaveChanges();
         }

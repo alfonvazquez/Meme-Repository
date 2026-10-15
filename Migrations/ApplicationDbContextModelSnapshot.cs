@@ -50,6 +50,9 @@ namespace memes_aspnet.Migrations
                     b.Property<int>("Gen")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ImageFileName")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)

@@ -1,9 +1,17 @@
 @model Meme
+@inject ImageStorage ImageStorage
 @{
     ViewData["Title"] = Model.Name;
+    var imageUrl = ImageStorage.GetUrl(Model.ImageFileName, ImageFolder.MemesImg);
 }
 
 <h1>@Model.Name</h1>
+
+@if (imageUrl is not null)
+{
+    <img src="@imageUrl" alt="@Model.Name" class="img-fluid rounded mb-3"
+         style="max-height: 500px;" />
+}
 
 <dl class="row">
     <dt class="col-sm-3">Descripcion</dt>

@@ -12,7 +12,8 @@ public class Meme
 
     [StringLength(1000, ErrorMessage = "La descripcion no puede superar los 1000 caracteres.")]
     public string Description  { get; set; } = string.Empty;
-    //public image? Image  { get; set; }
+    
+    public string? ImageFileName { get; set; }
     //public int Score  { get; set; }
 
     public Gen Gen { get; set;}
