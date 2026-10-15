@@ -4,6 +4,30 @@
 }
 
 <h1>Memes</h1>
+
+<form method="get" asp-action="Index" class="row g-2 align-items-end mb-3">
+    <div class="col-md-4">
+        <label class="form-label" for="search">Name</label>
+        <input class="form-control" id="search" name="search" value="@ViewBag.Search" placeholder="Buscar por nombre" />
+    </div>
+    
+    <div class="col-md-3">
+        <label class="form-label" for="gen">Gen</label>
+        <select class="form-select" id="gen" name="gen">
+            <option value="">All</option>
+            @foreach (var type in Enum.GetValues<Gen>())
+            {
+                <option value="@type" selected="@(type == ViewBag.Gen)">@Html.DisplayFor(m => type)</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Clean</a>
+    </div>
+</form>
+
 <p>There are @Model.Count memes.</p>
 
 <table class="table table-striped">
