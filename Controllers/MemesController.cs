@@ -7,6 +7,7 @@ namespace memes_aspnet.Controllers;
 
 public class MemesController : Controller
 {
+    private const int PageSize = 10;
     private readonly ApplicationDbContext context;
 
     public MemesController(ApplicationDbContext context)
@@ -14,7 +15,7 @@ public class MemesController : Controller
         this.context = context;
     }
 
-    public IActionResult Index(string? search, Gen? gen)
+    public IActionResult Index(string? search, Gen? gen, int page = 1)
     {
         var query = context.Memes.AsQueryable();
 
@@ -32,7 +33,20 @@ public class MemesController : Controller
         ViewBag.Search = search;
         ViewBag.Gen = gen;
 
-        var memes = query.OrderBy(r => r.Name).ToList();
+        var totalCount = query.Count();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var memes = query
+            .OrderBy(r => r.Name)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
+
+        ViewBag.Page = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+        
         return View(memes);
     }
 
