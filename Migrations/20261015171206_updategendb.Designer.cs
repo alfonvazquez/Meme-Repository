@@ -11,7 +11,7 @@ namespace memes_aspnet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20261015171206_updategendb")]
-    partial class updategendb
+    partial class Updategendb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

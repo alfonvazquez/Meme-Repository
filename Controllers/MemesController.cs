@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using memes_aspnet.Data;
 using memes_aspnet.Models;
+using memes_aspnet.Services;
 
 namespace memes_aspnet.Controllers;
 
@@ -10,10 +11,14 @@ public class MemesController : Controller
     private const int PageSize = 10;
     private readonly ApplicationDbContext context;
 
-    public MemesController(ApplicationDbContext context)
+    private readonly ImageStorage images;
+
+    public MemesController(ApplicationDbContext context, ImageStorage images)
     {
         this.context = context;
+        this.images = images;
     }
+
 
     public IActionResult Index(string? search, Gen? gen, int page = 1)
     {
@@ -46,7 +51,7 @@ public class MemesController : Controller
         ViewBag.Page = page;
         ViewBag.TotalPages = totalPages;
         ViewBag.TotalCount = totalCount;
-        
+
         return View(memes);
     }
 
@@ -61,6 +66,51 @@ public class MemesController : Controller
 
         return View(meme);
     }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        var meme = new Meme { };
+        return View("Form", meme);
+    }
+
+    [HttpPost]
+    public IActionResult Save(Meme meme, IFormFile? image)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("Form", meme);
+        }
+
+        meme.ImageFileName = null;
+
+        if (image is not null && image.Length > 0)
+        {
+            var upload = images.Save(image, ImageFolder.MemesImg, meme.Name);
+            if (!upload.Succeeded)
+            {
+                ModelState.AddModelError("image", upload.Error!);
+                return View("Form", meme);
+            }
+
+            meme.ImageFileName = upload.FileName;
+        }
+
+        try
+        {
+            context.Memes.Add(meme);
+            context.SaveChanges();
+        }
+        catch
+        {
+            images.Delete(meme.ImageFileName, ImageFolder.MemesImg);
+            throw;
+        }
+
+        TempData["Message"] = "Meme saved.";
+        return RedirectToAction("Details", new { id = meme.Id });
+    }
+
 }
 
 

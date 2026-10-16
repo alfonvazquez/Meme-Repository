@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace RestaurantesAspNet.Models;
+namespace memes_aspnet.Models;
 
 /// <summary>
 /// Cuenta común reutilizable en todos los proyectos del curso. Identity aporta el

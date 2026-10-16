@@ -1,0 +1,45 @@
+@model Meme
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Add meme" : "Edit meme";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Save" method="post" enctype="multipart/form-data" class="col-lg-8">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input class="form-control" type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.gif,.webp" />
+        <div class="text-danger">@Html.ValidationMessage("image")</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Name">Name</label>
+        <input class="form-control" asp-for="Name" />
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Description">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="6"></textarea>
+        <span class="text-danger" asp-validation-for="Description"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" asp-for="Gen">Gen</label>
+        <select class="form-select" asp-for="Gen" asp-items="Html.GetEnumSelectList<Gen>()">
+            <option value="">Select a gen</option>
+        </select>
+    </div>
+
+
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

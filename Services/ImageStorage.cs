@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 
 namespace memes_aspnet.Services;
 
@@ -16,6 +17,35 @@ public sealed class ImageStorage
     private readonly ImageStorageOptions options;
     private readonly ILogger<ImageStorage> logger;
 
+    private static string Slugify(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        var builder = new StringBuilder();
+        foreach (var character in text.Normalize(NormalizationForm.FormD))
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(character) == UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            if (char.IsAsciiLetterOrDigit(character))
+            {
+                builder.Append(char.ToLowerInvariant(character));
+            }
+            else if (builder.Length > 0 && builder[^1] != '-')
+            {
+                builder.Append('-');
+            }
+        }
+
+        var result = builder.ToString().Trim('-');
+        return result.Length > 40 ? result[..40].TrimEnd('-') : result;
+    }
+
     public ImageStorage(
         IWebHostEnvironment environment,
         IOptions<ImageStorageOptions> options,
@@ -27,7 +57,7 @@ public sealed class ImageStorage
     }
 
     /// <summary>Valida y guarda la imagen con un nombre nuevo, sin usar el del navegador.</summary>
-    public ImageUploadResult Save(IFormFile file, ImageFolder folder)
+    public ImageUploadResult Save(IFormFile file, ImageFolder folder, string? nameHint = null)
     {
         if (file.Length <= 0)
         {
@@ -53,7 +83,12 @@ public sealed class ImageStorage
             return ImageUploadResult.Failure("El contenido del archivo no parece una imagen válida.");
         }
 
-        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var slug = Slugify(nameHint);
+        var uniquePart = Guid.NewGuid().ToString("N")[..8];
+        var fileName = string.IsNullOrEmpty(slug)
+            ? $"{uniquePart}{extension}"
+            : $"{slug}-{uniquePart}{extension}";
+
         var path = Path.Combine(GetDirectory(folder), fileName);
         Directory.CreateDirectory(GetDirectory(folder));
 

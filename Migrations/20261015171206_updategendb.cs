@@ -5,7 +5,7 @@
 namespace memes_aspnet.Migrations
 {
     /// <inheritdoc />
-    public partial class updategendb : Migration
+    public partial class Updategendb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

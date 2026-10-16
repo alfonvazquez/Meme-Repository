@@ -6,11 +6,11 @@ public class Meme
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "El nombre es obligatorio.")]
-    [StringLength(50, ErrorMessage = "El nombre no puede superar los 50 caracteres.")]
+    [Required(ErrorMessage = "You must provide a Name.")]
+    [StringLength(50, ErrorMessage = "The name can't' have more that 50 characters.")]
     public string Name  { get; set; } = string.Empty;
 
-    [StringLength(1000, ErrorMessage = "La descripcion no puede superar los 1000 caracteres.")]
+    [StringLength(3000, ErrorMessage = "The description can't have more 1000 characters.")]
     public string Description  { get; set; } = string.Empty;
     
     public string? ImageFileName { get; set; }
