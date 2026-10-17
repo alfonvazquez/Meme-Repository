@@ -8,7 +8,7 @@ namespace memes_aspnet.Controllers;
 
 public class MemesController : Controller
 {
-    private const int PageSize = 10;
+    private static readonly int[] AllowedPageSizes = [1, 2, 3];
     private readonly ApplicationDbContext context;
 
     private readonly ImageStorage images;
@@ -20,7 +20,7 @@ public class MemesController : Controller
     }
 
 
-    public IActionResult Index(string? search, Gen? gen, int page = 1)
+    public IActionResult Index(string? search, Gen? gen, int size = 10, int page = 1)
     {
         var query = context.Memes.AsQueryable();
 
@@ -35,24 +35,37 @@ public class MemesController : Controller
             query = query.Where(r => r.Gen == gen);
         }
 
-
         ViewBag.Search = search;
         ViewBag.Gen = gen;
 
+        if (!AllowedPageSizes.Contains(size))
+        {
+            size = AllowedPageSizes[0];
+        }
+
         var totalCount = query.Count();
-        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)size));
         page = Math.Clamp(page, 1, totalPages);
 
         var memes = query
             .OrderBy(r => r.Name)
-            .Skip((page - 1) * PageSize)
-            .Take(PageSize)
+            .Skip((page - 1) * size)
+            .Take(size)
             .ToList();
 
         ViewBag.Page = page;
         ViewBag.TotalPages = totalPages;
         ViewBag.TotalCount = totalCount;
+        ViewBag.Size = size;
+        ViewBag.PageSizes = AllowedPageSizes;
 
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            Response.Headers["Vary"] = "X-Requested-With";
+            return PartialView("_MemesList", memes);
+        }
+
+        Response.Headers["Vary"] = "X-Requested-With";
         return View(memes);
     }
 

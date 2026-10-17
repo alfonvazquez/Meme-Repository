@@ -1,0 +1,66 @@
+@model List<Meme>
+@inject ImageStorage ImageStorage
+
+<p>There are @ViewBag.TotalCount memes.</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Gen</th>
+            @* <th>Image</th>
+            <th>Score</th> *@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var meme in Model)
+        {
+            
+            <tr>
+                @{
+                    var imageUrl = ImageStorage.GetUrl(meme.ImageFileName, ImageFolder.MemesImg);
+                }
+                <td>
+                    @if (imageUrl is not null)
+                    {
+                        <img src="@imageUrl" alt="@meme.Name" loading="lazy"
+                             style="width: 64px; height: 64px; object-fit: cover;" />
+                    }
+                </td>
+                <td><a asp-action="Details" asp-route-id="@meme.Id">@meme.Name</a></td>
+                <td>@meme.Description</td>
+                <td>@meme.Gen</td>
+                @*<td>@meme.Score</td> *@
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    int size = ViewBag.Size;
+    int currentPage = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+    string? search = ViewBag.Search;
+    string? gen = ViewBag.Gen is null ? null : ViewBag.Gen.ToString();
+}
+
+@if (totalPages > 1)
+{
+    <nav aria-label="Memes pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-search="@search" asp-route-gen="@gen" asp-route-page="@(currentPage - 1)">Previous</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page @currentPage of @totalPages</span>
+            </li>
+            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-search="@search" asp-route-gen="@gen" asp-route-page="@(currentPage + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
