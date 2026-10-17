@@ -13,6 +13,21 @@ public class MemesController : Controller
 
     private readonly ImageStorage images;
 
+    private static List<string> ParseKeywords(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new List<string>();
+        }
+
+        return text.Split(',')
+            .Select(word => word.Trim().ToLowerInvariant())
+            .Where(word => word.Length > 0 && word.Length <= 30)
+            .Distinct()
+            .Take(10)
+            .ToList();
+    }
+
     public MemesController(ApplicationDbContext context, ImageStorage images)
     {
         this.context = context;
@@ -72,7 +87,9 @@ public class MemesController : Controller
 
     public IActionResult Details(int id)
     {
-        var meme = context.Memes.Find(id);
+        var meme = context.Memes
+            .Include(m => m.KeyWords)
+            .FirstOrDefault(m => m.Id == id);
         if (meme == null)
         {
             return NotFound();
@@ -89,14 +106,16 @@ public class MemesController : Controller
     }
 
     [HttpPost]
-    public IActionResult Save(Meme meme, IFormFile? image)
+    public IActionResult Save(Meme meme, IFormFile? image, string? proposedKeywords)
     {
+        meme.ImageFileName = null;
+        meme.KeyWords = new();
+
         if (!ModelState.IsValid)
         {
             return View("Form", meme);
         }
 
-        meme.ImageFileName = null;
 
         if (image is not null && image.Length > 0)
         {
@@ -104,10 +123,16 @@ public class MemesController : Controller
             if (!upload.Succeeded)
             {
                 ModelState.AddModelError("image", upload.Error!);
+                ViewBag.ProposedKeywords = proposedKeywords;
                 return View("Form", meme);
             }
 
             meme.ImageFileName = upload.FileName;
+        }
+
+        foreach (var word in ParseKeywords(proposedKeywords))
+        {
+            meme.KeyWords.Add(new KeyWord { Word = word });
         }
 
         try

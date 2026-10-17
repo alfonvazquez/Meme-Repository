@@ -34,6 +34,13 @@
         </select>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label" for="proposedKeywords">Keywords (optional)</label>
+        <input class="form-control" id="proposedKeywords" name="proposedKeywords" value="@ViewBag.ProposedKeywords"
+               placeholder="simpsons, skinner, pathetic" />
+        <div class="form-text">Separate them with commas.</div>
+    </div>
+
 
     <button class="btn btn-primary" type="submit">Save</button>
     <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>

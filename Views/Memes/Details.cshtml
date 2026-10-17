@@ -9,13 +9,26 @@
 
 @if (imageUrl is not null)
 {
-    <img src="@imageUrl" alt="@Model.Name" class="img-fluid rounded mb-3"
-         style="max-height: 500px;" />
+    <img src="@imageUrl" alt="@Model.Name" class="img-fluid rounded mb-3" style="max-height: 500px;" />
 }
 
 <dl class="row">
     <dt class="col-sm-1">Description: </dt>
     <dd class="col-sm-9">@Model.Description</dd>
+    <dt class="col-sm-3">Keywords</dt>
+    <dd class="col-sm-9">
+        @if (Model.KeyWords.Any())
+        {
+            foreach (var keyword in Model.KeyWords.OrderBy(k => k.Word))
+            {
+                <span class="badge text-bg-secondary me-1">@keyword.Word</span>
+            }
+        }
+        else
+        {
+            <span class="text-muted">No keywords</span>
+        }
+    </dd>
 </dl>
 
 <a class="btn btn-secondary" asp-action="Index">Volver al listado</a>
