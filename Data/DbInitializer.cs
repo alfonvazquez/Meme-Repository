@@ -31,7 +31,8 @@ public static class DbInitializer
                 new KeyWord {Word = "BugsBunny", Meme = communistBugsBunny},
                 new KeyWord {Word = "Communist", Meme = communistBugsBunny},
                 new KeyWord {Word = "Bugs Bunny", Meme = communistBugsBunny},
-                new KeyWord {Word = "Pathetic", Meme = pathetic}
+                new KeyWord {Word = "Pathetic", Meme = pathetic},
+                new KeyWord {Word = "Simpsons", Meme = pathetic}
             );
             context.SaveChanges();
         }
