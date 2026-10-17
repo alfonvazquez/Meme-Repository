@@ -3,12 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using memes_aspnet.Data;
 using memes_aspnet.Models;
 using memes_aspnet.Services;
+using System.Text.RegularExpressions;
 
 namespace memes_aspnet.Controllers;
 
 public class MemesController : Controller
 {
     private static readonly int[] AllowedPageSizes = [10, 20, 30];
+    private static readonly HashSet<string> StopWords = new()
+    {
+        "the", "and", "for", "with", "from", "that", "this",
+        "los", "las", "del", "una", "unos", "unas", "con", "por", "para", "que", "como"
+    };
+
     private readonly ApplicationDbContext context;
 
     private readonly ImageStorage images;
@@ -25,6 +32,18 @@ public class MemesController : Controller
             .Where(word => word.Length > 0 && word.Length <= 30)
             .Distinct()
             .Take(10)
+            .ToList();
+    }
+    private static List<string> ExtractKeywordsFromName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return new List<string>();
+        }
+
+        return Regex.Split(name.ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+            .Where(word => word.Length >= 3 && word.Length <= 30 && !StopWords.Contains(word))
+            .Distinct()
             .ToList();
     }
 
@@ -130,7 +149,12 @@ public class MemesController : Controller
             meme.ImageFileName = upload.FileName;
         }
 
-        foreach (var word in ParseKeywords(proposedKeywords))
+        var keywords = ParseKeywords(proposedKeywords)
+            .Concat(ExtractKeywordsFromName(meme.Name))
+            .Distinct()
+            .Take(10);
+
+        foreach (var word in keywords)
         {
             meme.KeyWords.Add(new KeyWord { Word = word });
         }
