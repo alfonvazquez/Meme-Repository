@@ -8,7 +8,7 @@ namespace memes_aspnet.Controllers;
 
 public class MemesController : Controller
 {
-    private static readonly int[] AllowedPageSizes = [1, 2, 3];
+    private static readonly int[] AllowedPageSizes = [10, 20, 30];
     private readonly ApplicationDbContext context;
 
     private readonly ImageStorage images;

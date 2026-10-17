@@ -54,17 +54,7 @@
         let timer;
         let controller;
 
-        async function refresh() {
-            const params = new URLSearchParams(new FormData(form));
-            for (const [key, value] of [...params]) {
-                if (value === "") {
-                    params.delete(key);
-                }
-            }
-
-            const query = params.toString();
-            const url = query ? `${form.action}?${query}` : form.action;
-
+        async function load(url) {
             controller?.abort();
             controller = new AbortController();
 
@@ -85,6 +75,33 @@
                 }
             }
         }
+
+        function refresh() {
+            const params = new URLSearchParams(new FormData(form));
+            for (const [key, value] of [...params]) {
+                if (value === "") {
+                    params.delete(key);
+                }
+            }
+
+            const query = params.toString();
+            load(query ? `${form.action}?${query}` : form.action);
+        }
+
+        results.addEventListener("click", (event) => {
+            const link = event.target.closest("a.page-link");
+            if (!link) {
+                return;
+            }
+
+            event.preventDefault();
+            if (link.closest(".disabled")) {
+                return;
+            }
+
+            load(link.href);
+            form.scrollIntoView({ behavior: "smooth" });
+        });
 
         form.elements.search.addEventListener("input", () => {
             clearTimeout(timer);
