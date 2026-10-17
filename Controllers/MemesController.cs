@@ -26,7 +26,8 @@ public class MemesController : Controller
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            query = query.Where(r => r.Name.ToLower().Contains(search.ToLower()));
+            query = query.Where(r => r.Name.ToLower().Contains(search.ToLower())
+                || r.KeyWords.Any(k => k.Word.ToLower().Contains(search.ToLower())));
         }
 
         if (gen != null)
