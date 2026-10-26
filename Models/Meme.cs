@@ -16,8 +16,8 @@ public class Meme
     public string? ImageFileName { get; set; }
     //public int Score  { get; set; }
 
-    public Gen Gen { get; set;}
+    public Gen Gen { get; set;}                             // Enum de Gen
 
-    public List<KeyWord> KeyWords { get; set; } = new();
+    public List<KeyWord> KeyWords { get; set; } = new();    // Varias KeyWords en mismo meme
 
 }
